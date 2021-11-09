@@ -41,12 +41,12 @@ namespace WebApi.Infrastructure.Jwt
         /// <summary>
         /// Время действия токена доступа.
         /// </summary>
-        private static int _accesslifeTime;
+        private static int _accessLifeTime;
 
         /// <summary>
         /// Время действия токена обновления.
         /// </summary>
-        private static int _refreshlifeTime;
+        private static int _refreshLifeTime;
 
         private static List<JwtSecurityToken> _refreshTokens;
 
@@ -61,12 +61,12 @@ namespace WebApi.Infrastructure.Jwt
             //var secretKeyName = configuration?.GetSection("Config:App:JwtToken:SecretKeyName")?.Value;
             //Argument.NotNullOrEmpty(secretKeyName, nameof(secretKeyName));
             //int.TryParse(configuration?.GetSection("Config:App:JwtToken:TokenLifeTime")?.Value, out _lifeTime);
-            _accesslifeTime = _accesslifeTime != default 
-                ? _accesslifeTime 
+            _accessLifeTime = _accessLifeTime != default 
+                ? _accessLifeTime 
                 : 10;
 
-            _refreshlifeTime = _accesslifeTime != default
-                ? _accesslifeTime
+            _refreshLifeTime = _accessLifeTime != default
+                ? _accessLifeTime
                 : 1200;
 
             // Если Dev mode, берем значение ключа шифрования из переменных окружения.
@@ -100,45 +100,97 @@ namespace WebApi.Infrastructure.Jwt
             Microsoft.IdentityModel.Tokens.TokenValidationParameters parameters) => exp != null && exp > DateTime.UtcNow;
 
         /// <summary>
+        /// Валидирует передаваемый токен и возвращает результат.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static bool ValidateToken(string token)
+        {
+            var jwtHandler = new JwtSecurityTokenHandler();
+            SecurityToken validatedToken;
+
+            // These need to match the values used to generate the token
+            TokenValidationParameters validationParameters = new TokenValidationParameters();
+            validationParameters.ValidIssuer = Issuer;
+            validationParameters.ValidAudience = Audience;
+            validationParameters.IssuerSigningKey = GetKey();
+            validationParameters.ValidateIssuerSigningKey = true;
+            validationParameters.ValidateAudience = true;
+            validationParameters.ValidateLifetime = true;
+
+            if (jwtHandler.CanReadToken(token))
+            {
+                try
+                {
+                    jwtHandler.ValidateToken(token, validationParameters, out validatedToken);
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    // ToDo write to logs
+                }
+            }
+
+            return false;
+        }
+
+        public static IEnumerable<Claim> GetClaimsFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+
+            return jwt.Claims;
+        }
+
+        /// <summary>
         /// Получить свежий токен доступа.
         /// </summary>
         /// <returns></returns>
         public static string GetAccessToken(User user)
         {
-            // В качестве клеймов прокидываем код профиля. *На будущее.
+            // ToDo add validation
             var claimsIdentity = new[]
             {
                 new System.Security.Claims.Claim("Id", user.Id.ToString()),
                 new System.Security.Claims.Claim("Role", user.RoleId.ToString()),
             };
 
-            var now = DateTime.UtcNow;
-            var expires = now.AddMinutes(_accesslifeTime);
-            var jwt = new JwtSecurityToken(
-                notBefore: now,
-                expires: expires,
-                audience: Audience,
-                issuer: Issuer,
-                claims: claimsIdentity,
-                signingCredentials: new SigningCredentials(GetKey(), SecurityAlgorithms.HmacSha256));
+            var jwt = GenerateToken(_accessLifeTime, claimsIdentity);
+
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
         /// <summary>
-        /// Получить свежий токен обновления.
+        /// Получить новую сущность токена обновления.
         /// </summary>
         /// <returns></returns>
-        public static string GetRefreshToken(User user)
+        public static RefreshToken GetRefreshToken(User user)
         {
-            // В качестве клеймов прокидываем код профиля. *На будущее.
+            // ToDo add validation
             var claimsIdentity = new[]
             {
                 new System.Security.Claims.Claim("Id", user.Id.ToString()),
                 new System.Security.Claims.Claim("Name", "RefreshToken"),
             };
 
+            var jwt = GenerateToken(_refreshLifeTime, claimsIdentity);
+
+            var refreshToken = new RefreshToken()
+            {
+                UserId = user.Id,
+                Token = new JwtSecurityTokenHandler().WriteToken(jwt),
+                ExpirationDate = jwt.ValidTo
+            };
+            return refreshToken; 
+        }
+
+        private static JwtSecurityToken GenerateToken(int minutesLifeTime, Claim[] claimsIdentity)
+        {
+            // ToDo add validation
             var now = DateTime.UtcNow;
-            var expires = now.AddMinutes(_refreshlifeTime);
+            var expires = now.AddMinutes(minutesLifeTime);
+
             var jwt = new JwtSecurityToken(
                 notBefore: now,
                 expires: expires,
@@ -146,7 +198,8 @@ namespace WebApi.Infrastructure.Jwt
                 issuer: Issuer,
                 claims: claimsIdentity,
                 signingCredentials: new SigningCredentials(GetKey(), SecurityAlgorithms.HmacSha256));
-            return new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return jwt;
         }
     }
 }

@@ -16,5 +16,7 @@ namespace WebApi.DataBaseProvider.Interfaces
         IEnumerable<User> GetUsers();
         IEnumerable<Role> GetRoles();
         Role GetRoleById(Guid id);
+        bool UpdateRefreshToken(RefreshToken model);
+        RefreshToken GetRefreshToken(Guid userId);
     }
 }

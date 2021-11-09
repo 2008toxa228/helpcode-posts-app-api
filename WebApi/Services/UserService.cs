@@ -28,18 +28,39 @@ namespace WebApi.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest request)
         {
-            var user = _dataBaseService.GetProvider().GetUserByEmail(request.Email);
+            if (request == null)
+            {
+                return null;
+            }
 
-            //if (user == null)
-            //{
-            //    return null;
-            //}
+            var user = _dataBaseService.GetProvider().GetUserByEmail(request.Email);
 
             if (user != null && PasswordManager.Verify(request.Password, user.PasswordHash))
             {
-                var response = new AuthenticateResponse(user, JwtManager.GetAccessToken(user), JwtManager.GetRefreshToken(user));
+                var refreshToken = JwtManager.GetRefreshToken(user);
 
-                return response;
+                return UpdateRefreshToken(refreshToken, user);
+            }
+
+            return null;
+        }
+
+        public AuthenticateResponse RefreshAccessToken(RefreshAccessTokenRequest request)
+        {
+            if (request == null)
+            {
+                return null;
+            }
+
+            var token = _dataBaseService.GetProvider().GetRefreshToken(request.UserId);
+
+            if (token.Token == request.RefreshToken && JwtManager.ValidateToken(request.RefreshToken))
+            {
+                var user = _dataBaseService.GetProvider().GetUserById(request.UserId);
+
+                var refreshToken = JwtManager.GetRefreshToken(user);
+
+                return UpdateRefreshToken(refreshToken, user);
             }
 
             return null;
@@ -57,27 +78,6 @@ namespace WebApi.Services
                 Reputation = 0,
             };
 
-            // ToDo remove after dev
-            // Testing of maximum token length
-            //var length = 0;
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    user = new User()
-            //    {
-            //        Id = Guid.NewGuid(),
-            //        RoleId = _defaultRole,
-            //        Email = request.Email,
-            //        Username = request.UserName,
-            //        PasswordHash = PasswordManager.GetHash(request.Password),
-            //        Reputation = 0,
-            //    };
-            //    var token = JwtManager.GetRefreshToken(user);
-            //    if (length < token.Length)
-            //    {
-            //        length = token.Length;
-            //    }
-            //}
-
             var result = _dataBaseService.GetProvider().AddUser(user);
 
             // ToDo Add more status codes
@@ -87,6 +87,24 @@ namespace WebApi.Services
             }
 
             return HttpStatusCode.Created;
+        }
+
+        private AuthenticateResponse UpdateRefreshToken(RefreshToken refreshToken, User user)
+        {
+            if (!JwtManager.ValidateToken(refreshToken?.Token))
+            {
+                return null;
+            }
+
+            if (_dataBaseService.GetProvider().UpdateRefreshToken(refreshToken))
+            {
+                var response = new AuthenticateResponse(user, JwtManager.GetAccessToken(user), refreshToken.Token);
+
+                return response;
+            }
+
+            // ToDo add logging of updating refreshToken error
+            return null;
         }
     }
 }

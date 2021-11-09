@@ -15,6 +15,8 @@ using WebApi.Services.Interfaces;
 using WebApi.Models;
 using System.Threading.Tasks;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using WebApi.Infrastructure.Extensions;
 
 namespace WebApi.Controllers
 {
@@ -30,7 +32,7 @@ namespace WebApi.Controllers
             _userService = userService;
         }
 
-        [HttpPost("/authenticate")]
+        [HttpPost("/signin")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {
             var response = _userService.Authenticate(model);
@@ -43,15 +45,34 @@ namespace WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpPost("/register")]
-        public async Task<IActionResult> Register(RegisterRequest model)
+        [HttpPost("/refresh")]
+        public IActionResult Refresh([FromBody]string refreshToken)
+        {
+            var refreshRequest = new RefreshAccessTokenRequest()
+            {
+                UserId = Guid.Parse(JwtManager.GetClaimsFromToken(refreshToken).GetValueByType("Id")),
+                RefreshToken = refreshToken
+            };
+
+            var response = _userService.RefreshAccessToken(refreshRequest);
+
+            if (response == null)
+            {
+                return BadRequest(new { message = "Refreshing access token attempt is failed" });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("/signup")]
+        public async Task<IActionResult> Register([FromBody]RegisterRequest model)
         {
             var response = await _userService.Register(model);
 
             // ToDo add more status codes to register.
             if (response != HttpStatusCode.Created)
             {
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = "Register attempt is failed" });
             }
 
             return Ok(response);

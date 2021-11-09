@@ -12,5 +12,7 @@ namespace WebApi.Services.Interfaces
         public AuthenticateResponse Authenticate(AuthenticateRequest request);
 
         public Task<HttpStatusCode> Register(RegisterRequest request);
+
+        AuthenticateResponse RefreshAccessToken(RefreshAccessTokenRequest request);
     }
 }

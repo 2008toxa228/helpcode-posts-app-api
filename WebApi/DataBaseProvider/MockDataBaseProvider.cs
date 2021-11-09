@@ -22,6 +22,10 @@ namespace WebApi.DataBaseProvider
             new Role("{\"Id\":\"858dcdcd-7093-4294-aa85-db86902a3d90\",\"Name\":\"default\",\"Description\":\"role by default\"}"),
             new Role("{\"Id\":\"e6e15c81-7f54-451d-b965-ea26902053ef\",\"Name\":\"admin\",\"Description\":\"admin role\"}"),
         };
+        private static List<RefreshToken> RefreshTokens = new List<RefreshToken>()
+        {
+
+        };
 
         public Role GetRoleById(Guid id)
         {
@@ -52,6 +56,29 @@ namespace WebApi.DataBaseProvider
         public IEnumerable<User> GetUsers()
         {
             return Users.ToArray();
+        }
+
+        public bool UpdateRefreshToken(RefreshToken model)
+        {
+            try
+            {
+                RefreshTokens.RemoveAll(x => x.UserId == model.UserId);
+
+                RefreshTokens.Add(model);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                // ToDo log exception
+                return false;
+            }
+        }
+        public RefreshToken GetRefreshToken(Guid userId)
+        {
+            var token = RefreshTokens.Where(x => x.UserId == userId).FirstOrDefault();
+
+            return token;
         }
 
         public bool AddUser(User user)
