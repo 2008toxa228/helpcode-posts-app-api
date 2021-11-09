@@ -5,16 +5,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-//using Norbit.Crm;
-//using CredentialManagerWrapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.IdentityModel.Claims;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Entities;
 using System.Collections.Generic;
-//using CredentialManagerWrapper;
-//using ClaimsIdentity = Microsoft.IdentityModel.Claims.ClaimsIdentity;
-//using ClaimTypes = Microsoft.IdentityModel.Claims.ClaimTypes;
 
 namespace WebApi.Infrastructure.Jwt
 {
@@ -59,11 +53,11 @@ namespace WebApi.Infrastructure.Jwt
             _refreshTokens = new List<JwtSecurityToken>();
 
             //var secretKeyName = configuration?.GetSection("Config:App:JwtToken:SecretKeyName")?.Value;
-            //Argument.NotNullOrEmpty(secretKeyName, nameof(secretKeyName));
+            // //Validate secretKeyName
             //int.TryParse(configuration?.GetSection("Config:App:JwtToken:TokenLifeTime")?.Value, out _lifeTime);
             _accessLifeTime = _accessLifeTime != default 
                 ? _accessLifeTime 
-                : 10;
+                : 5;
 
             _refreshLifeTime = _accessLifeTime != default
                 ? _accessLifeTime
@@ -76,7 +70,7 @@ namespace WebApi.Infrastructure.Jwt
             //var credentialManager = new CredentialManager(System.Security.Principal.WindowsIdentity.GetCurrent().Name);
             //_secretKey = credentialManager.GetPassword(secretKeyName);
 #endif
-            //Argument.NotNullOrEmpty(_secretKey, nameof(_secretKey));
+            // //Validate _secretKey
 
         }
 
@@ -165,7 +159,7 @@ namespace WebApi.Infrastructure.Jwt
         /// Получить новую сущность токена обновления.
         /// </summary>
         /// <returns></returns>
-        public static RefreshToken GetRefreshToken(User user)
+        public static RefreshToken GetRefreshTokenEntity(User user)
         {
             // ToDo add validation
             var claimsIdentity = new[]

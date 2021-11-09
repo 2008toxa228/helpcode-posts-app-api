@@ -37,7 +37,7 @@ namespace WebApi.Services
 
             if (user != null && PasswordManager.Verify(request.Password, user.PasswordHash))
             {
-                var refreshToken = JwtManager.GetRefreshToken(user);
+                var refreshToken = JwtManager.GetRefreshTokenEntity(user);
 
                 return UpdateRefreshToken(refreshToken, user);
             }
@@ -54,11 +54,11 @@ namespace WebApi.Services
 
             var token = _dataBaseService.GetProvider().GetRefreshToken(request.UserId);
 
-            if (token.Token == request.RefreshToken && JwtManager.ValidateToken(request.RefreshToken))
+            if (token?.Token == request.RefreshToken && JwtManager.ValidateToken(request.RefreshToken))
             {
                 var user = _dataBaseService.GetProvider().GetUserById(request.UserId);
 
-                var refreshToken = JwtManager.GetRefreshToken(user);
+                var refreshToken = JwtManager.GetRefreshTokenEntity(user);
 
                 return UpdateRefreshToken(refreshToken, user);
             }
