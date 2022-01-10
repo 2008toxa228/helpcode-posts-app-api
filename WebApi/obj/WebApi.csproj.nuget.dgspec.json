@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\swsu ka\\!!!Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\WebApi.csproj": {}
+    "D:\\swsu ka\\term5\\moy-Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\WebApi.csproj": {}
   },
   "projects": {
-    "D:\\swsu ka\\!!!Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\WebApi.csproj": {
+    "D:\\swsu ka\\term5\\moy-Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\swsu ka\\!!!Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\WebApi.csproj",
+        "projectUniqueName": "D:\\swsu ka\\term5\\moy-Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\WebApi.csproj",
         "projectName": "WebApi",
-        "projectPath": "D:\\swsu ka\\!!!Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\WebApi.csproj",
+        "projectPath": "D:\\swsu ka\\term5\\moy-Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\WebApi.csproj",
         "packagesPath": "C:\\Users\\asdqwe\\.nuget\\packages\\",
-        "outputPath": "D:\\swsu ka\\!!!Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\obj\\",
+        "outputPath": "D:\\swsu ka\\term5\\moy-Kursa4\\Solution\\helpcode-posts-app-api\\WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -70,6 +70,18 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
+            },
+            "System.Configuration.ConfigurationManager": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.3, )"
+            },
+            "linq2db": {
+              "target": "Package",
+              "version": "[3.6.0, )"
             }
           },
           "imports": [

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.DataBaseProvider.Interfaces;
+using WebApi.DataBaseProvider;
 
 namespace WebApi.Services.Interfaces
 {
     public interface IDataBaseService
     {
-        public IDataBaseProvider GetProvider(); 
+        public DataBaseProviderBase GetProvider(); 
     }
 }

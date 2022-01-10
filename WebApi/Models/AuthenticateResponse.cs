@@ -12,8 +12,6 @@ namespace WebApi.Models
         public Guid RoleId { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
-        public int Reputation { get; set; }
-
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
 
@@ -24,7 +22,6 @@ namespace WebApi.Models
             this.Id = user.Id;
             this.RoleId = user.RoleId;
             this.Email = user.Email;
-            this.Reputation = user.Reputation;
             this.UserName = user.Username;
 
             this.AccessToken = accessToken;

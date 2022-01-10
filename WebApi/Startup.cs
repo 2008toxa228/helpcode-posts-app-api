@@ -102,6 +102,7 @@ namespace WebApi
                     };
                 });
 
+
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             //{
             //    options.RequireHttpsMetadata = true; // Передача токена по SSL.

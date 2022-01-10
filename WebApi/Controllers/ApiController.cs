@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using WebApi.Services.Interfaces;
 using Newtonsoft.Json;
 using WebApi.DataBaseProvider;
-using WebApi.DataBaseProvider.Interfaces;
 using WebApi.Entities;
 using WebApi.Infrastructure.Extensions;
 
@@ -20,7 +19,7 @@ namespace WebApi.Controllers
     {
         private readonly ILogger<ApiController> _logger;
 
-        private readonly IDataBaseProvider _dbProvider;
+        private readonly DataBaseProviderBase _dbProvider;
 
         public ApiController(ILogger<ApiController> logger, IDataBaseService dataBaseService)
         {
@@ -28,18 +27,18 @@ namespace WebApi.Controllers
             _dbProvider = dataBaseService.GetProvider();
         }
 
-        [Authorize]
-        [HttpGet]
-        public string GetUserRole()
-        {
-            // ToDo remove after development testing
-            //var user = _dbProvider.GetUserById(Guid.Parse(User.Claims.GetValueByType("Id")));
+        //[Authorize]
+        //[HttpGet]
+        //public string GetUserRole()
+        //{
+        //    // ToDo remove after development testing
+        //    //var user = _dbProvider.GetUserById(Guid.Parse(User.Claims.GetValueByType("Id")));
 
-            //var str = user.ToString();
+        //    //var str = user.ToString();
 
-            var role = _dbProvider.GetRoleById(Guid.Parse(User.Claims.GetValueByType("Role")));
+        //    var role = _dbProvider.GetRoleById(Guid.Parse(User.Claims.GetValueByType("Role")));
 
-            return role.ToString();
-        }
+        //    return role.ToString();
+        //}
     }
 }

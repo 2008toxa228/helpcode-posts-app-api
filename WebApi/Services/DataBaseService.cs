@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.DataBaseProvider;
-using WebApi.DataBaseProvider.Interfaces;
 using WebApi.Services.Interfaces;
 
 namespace WebApi.Services
@@ -13,18 +12,18 @@ namespace WebApi.Services
         /// <summary>
         /// Провайдер к тестовой базе данных с мок объектами.
         /// </summary>
-        private IDataBaseProvider _mockDataBaseProvider = new MockDataBaseProvider();
+        private DataBaseProviderBase _mockDataBaseProvider = new LinqToDbProvider();
 
         /// <summary>
         /// Провайдер к базе данных.
         /// </summary>
-        private IDataBaseProvider _dataBaseProvider = new MockDataBaseProvider();
+        private DataBaseProviderBase _dataBaseProvider = new LinqToDbProvider();
 
         /// <summary>
         /// Возвращает нужный провайдер к базе данных.
         /// </summary>
         /// <returns>Возвращает нужный провайдер к базе данных.</returns>
-        public IDataBaseProvider GetProvider()
+        public DataBaseProviderBase GetProvider()
         {
 #if (!DEBUG)
             return _dataBaseProvider;

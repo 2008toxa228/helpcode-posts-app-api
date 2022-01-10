@@ -22,7 +22,7 @@ namespace WebApi.Services
 
         public UserService(IConfiguration configuration, IDataBaseService dataBaseService)
         {
-            _defaultRole = Guid.Parse("858dcdcd-7093-4294-aa85-db86902a3d90");
+            _defaultRole = Guid.Parse("8e2edef6-8060-4cf4-a66b-6ab10f550dd1");
             _dataBaseService = dataBaseService;
         }
 
@@ -39,6 +39,9 @@ namespace WebApi.Services
             {
                 var response = new AuthenticateResponse(user, JwtManager.GetAccessToken(user), JwtManager.GetRefreshToken(user));
 
+                // ToDo add refresh token to db.
+                //_dataBaseService.GetProvider().AddRefreshToken();
+
                 return response;
             }
 
@@ -49,44 +52,21 @@ namespace WebApi.Services
         {
             var user = new User()
             {
-                Id = Guid.NewGuid(),
                 RoleId = _defaultRole,
                 Email = request.Email,
                 Username = request.UserName,
                 PasswordHash = PasswordManager.GetHash(request.Password),
-                Reputation = 0,
             };
-
-            // ToDo remove after dev
-            // Testing of maximum token length
-            //var length = 0;
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    user = new User()
-            //    {
-            //        Id = Guid.NewGuid(),
-            //        RoleId = _defaultRole,
-            //        Email = request.Email,
-            //        Username = request.UserName,
-            //        PasswordHash = PasswordManager.GetHash(request.Password),
-            //        Reputation = 0,
-            //    };
-            //    var token = JwtManager.GetRefreshToken(user);
-            //    if (length < token.Length)
-            //    {
-            //        length = token.Length;
-            //    }
-            //}
 
             var result = _dataBaseService.GetProvider().AddUser(user);
 
             // ToDo Add more status codes
-            if (!result)
+            if (result == 1)
             {
-                return HttpStatusCode.Conflict;
+                return HttpStatusCode.Created;
             }
 
-            return HttpStatusCode.Created;
+            return HttpStatusCode.Conflict;
         }
     }
 }
