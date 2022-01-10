@@ -8,7 +8,6 @@ using System.Security.Claims;
 using WebApi.Infrastructure.Jwt;
 using System.Text;
 using WebApi.DataBaseProvider;
-using WebApi.DataBaseProvider.Interfaces;
 using WebApi.Entities;
 using Newtonsoft.Json;
 using WebApi.Services.Interfaces;

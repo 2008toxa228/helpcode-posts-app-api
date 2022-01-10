@@ -10,7 +10,7 @@ namespace WebApi.Entities
     {
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this, Formatting.None);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

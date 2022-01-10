@@ -12,7 +12,6 @@ namespace WebApi.Entities
         public Guid RoleId { get; set; }
         public string Email { get; set; }
         public string Username { get; set; }
-        public int Reputation { get; set; }
         public string PasswordHash { get; set; }
 
         public User() { }
@@ -25,7 +24,6 @@ namespace WebApi.Entities
             this.RoleId = user.RoleId;
             this.Email = user.Email;
             this.Username = user.Username;
-            this.Reputation = user.Reputation;
             this.PasswordHash = user.PasswordHash;
         }
     }

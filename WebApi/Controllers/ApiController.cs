@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using WebApi.Services.Interfaces;
 using Newtonsoft.Json;
 using WebApi.DataBaseProvider;
-using WebApi.DataBaseProvider.Interfaces;
 using WebApi.Entities;
 using WebApi.Infrastructure.Extensions;
 
@@ -20,7 +19,7 @@ namespace WebApi.Controllers
     {
         private readonly ILogger<ApiController> _logger;
 
-        private readonly IDataBaseProvider _dbProvider;
+        private readonly DataBaseProviderBase _dbProvider;
 
         public ApiController(ILogger<ApiController> logger, IDataBaseService dataBaseService)
         {
@@ -37,7 +36,7 @@ namespace WebApi.Controllers
 
             //var str = user.ToString();
 
-            var role = _dbProvider.GetRoleById(Guid.Parse(User.Claims.GetValueByType("Role")));
+            var role = _dbProvider.GetRoleNameByUserId(Guid.Parse(User.Claims.GetValueByType("Role")));
 
             return role.ToString();
         }

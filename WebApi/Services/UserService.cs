@@ -75,18 +75,17 @@ namespace WebApi.Services
                 Email = request.Email,
                 Username = request.UserName,
                 PasswordHash = PasswordManager.GetHash(request.Password),
-                Reputation = 0,
             };
 
             var result = _dataBaseService.GetProvider().AddUser(user);
 
             // ToDo Add more status codes
-            if (!result)
+            if (result == 1)
             {
-                return HttpStatusCode.Conflict;
+                return HttpStatusCode.Created;
             }
+            return HttpStatusCode.Conflict;
 
-            return HttpStatusCode.Created;
         }
 
         private AuthenticateResponse UpdateRefreshToken(RefreshToken refreshToken, User user)
@@ -96,7 +95,7 @@ namespace WebApi.Services
                 return null;
             }
 
-            if (_dataBaseService.GetProvider().UpdateRefreshToken(refreshToken))
+            if (_dataBaseService.GetProvider().UpdateRefreshToken(refreshToken) == 1)
             {
                 var response = new AuthenticateResponse(user, JwtManager.GetAccessToken(user), refreshToken.Token);
 
