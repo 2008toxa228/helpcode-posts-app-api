@@ -46,13 +46,13 @@ namespace WebApi
             });
 
             //–азрешаем корсы дл€ всего вообще, разумеетс€ дл€ dev мода.
-            services.AddCors(options => options.AddPolicy("AllowSpecificOrigin",
+            services.AddCors(/*options => options.AddPolicy("AllowSpecificOrigin",
                 builder =>
                 {
                     builder.AllowAnyOrigin();
                     builder.AllowAnyMethod();
                     builder.AllowAnyHeader();
-                }));
+                })*/);
             services.Configure<WebEncoderOptions>(options =>
             {
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
@@ -122,6 +122,12 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

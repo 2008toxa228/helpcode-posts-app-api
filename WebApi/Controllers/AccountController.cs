@@ -20,7 +20,7 @@ using WebApi.Infrastructure.Extensions;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[api]")]
     public class AccountController : Controller
     {
 

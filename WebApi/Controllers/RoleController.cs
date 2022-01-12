@@ -14,21 +14,21 @@ using WebApi.Infrastructure.Extensions;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class ApiController : ControllerBase
+    [Route("[api]")]
+    public class RoleController : ControllerBase
     {
-        private readonly ILogger<ApiController> _logger;
+        private readonly ILogger<PostController> _logger;
 
         private readonly DataBaseProviderBase _dbProvider;
 
-        public ApiController(ILogger<ApiController> logger, IDataBaseService dataBaseService)
+        public RoleController(ILogger<PostController> logger, IDataBaseService dataBaseService)
         {
             _logger = logger;
             _dbProvider = dataBaseService.GetProvider();
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("/getuserrole")]
         public string GetUserRole()
         {
             // ToDo remove after development testing
@@ -39,6 +39,14 @@ namespace WebApi.Controllers
             var role = _dbProvider.GetRoleNameByUserId(Guid.Parse(User.Claims.GetValueByType("Role")));
 
             return role.ToString();
+        }
+
+        [HttpGet("/getrolenamebyuserid")]
+        public string GetRoleNameByUserId(Guid id)
+        {
+            var role = _dbProvider.GetRoleNameByUserId(id);
+
+            return role?.ToString();
         }
     }
 }

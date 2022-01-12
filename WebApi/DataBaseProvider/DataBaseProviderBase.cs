@@ -22,8 +22,9 @@ namespace WebApi.DataBaseProvider
         public abstract Role GetDefaultRole();
         public abstract Role GetRoleByName(string name);
 
-        public abstract RefreshToken GetRefreshToken(Guid id);
 
+
+        public abstract RefreshToken GetRefreshToken(Guid id);
         public abstract int UpdateRefreshToken(RefreshToken refreshToken);
 
 
@@ -45,5 +46,25 @@ namespace WebApi.DataBaseProvider
         public abstract int DeleteUserById(Guid id);
         public abstract User GetUserByEmail(string email);
         public abstract string GetRoleNameByUserId(Guid id);
+
+
+
+        public abstract IEnumerable<Category> GetCategories(int page, int perPage = 100);
+        public abstract int AddPostCategory(Guid postId, Guid categoryId);
+        public abstract int RemovePostCategory(Guid postId, Guid categoryId);
+        public abstract int AddCategory(string name, string description);
+        public abstract Category GetCategoryByName(string name);
+        public abstract Category GetCategoryById(Guid id);
+        public abstract IEnumerable<Category> GetCategoriesByPostId(Guid id);
+
+
+
+        public abstract int AddComment(Comment comment);
+        public abstract IEnumerable<Comment> GetCommentsByPostId(Guid id);
+
+
+        public abstract IEnumerable<object> Query1(string username, DateTime startDate, DateTime endDate);
+        public abstract IEnumerable<object> Query2(string username, DateTime startDate, DateTime endDate);
+        public abstract IEnumerable<object> Query3(string postTitle);
     }
 }

@@ -15,7 +15,7 @@ namespace WebApi.Entities
         public string Content { get; set; }
         public int ViewsCount { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime ClosedDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
 
         public Post() { }
 
